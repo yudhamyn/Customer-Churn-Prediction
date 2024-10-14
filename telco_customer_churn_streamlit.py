@@ -265,20 +265,34 @@ if uploaded_file is not None:
 
             # Additional Insights
             # 1. Churn by Contract Type
+            # 1. Churn by Contract Type with Percentage
             st.subheader("Churn by Contract Type")
             if 'Contract' in original_data.columns:
+                contract_churn = original_data.groupby('Contract')['Churn'].mean().reset_index()
+                contract_churn['Churn Rate (%)'] = contract_churn['Churn'] * 100
+                st.write(contract_churn)
+                
+                # Visualize Churn by Contract Type
                 fig, ax = plt.subplots()
                 sns.countplot(data=original_data, x='Contract', hue='Churn', ax=ax)
                 ax.set_title("Churn by Contract Type")
                 st.pyplot(fig)
 
+
             # 2. Churn by Payment Method
+            # 2. Churn by Payment Method with Percentage
             st.subheader("Churn by Payment Method")
             if 'PaymentMethod' in original_data.columns:
+                payment_churn = original_data.groupby('PaymentMethod')['Churn'].mean().reset_index()
+                payment_churn['Churn Rate (%)'] = payment_churn['Churn'] * 100
+                st.write(payment_churn)
+                
+                # Visualize Churn by Payment Method
                 fig, ax = plt.subplots()
                 sns.countplot(data=original_data, x='PaymentMethod', hue='Churn', ax=ax)
                 ax.set_title("Churn by Payment Method")
                 st.pyplot(fig)
+
 
             # 3. Monthly Charges vs. Total Charges
             st.subheader("Monthly Charges vs. Total Charges")
