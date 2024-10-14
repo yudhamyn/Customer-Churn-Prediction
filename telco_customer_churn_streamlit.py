@@ -219,22 +219,6 @@ if uploaded_file is not None:
         ax.set_title("Distribution of Monthly Charges")
         st.pyplot(fig)
 
-        # # Correlation Heatmap
-        # st.subheader("Correlation Heatmap")
-        # fig, ax = plt.subplots()
-        # sns.heatmap(df.corr(), annot=True, cmap="coolwarm", ax=ax)
-        # ax.set_title("Correlation between Features")
-        # st.pyplot(fig)
-
-        # # Tenure vs. Monthly Charges
-        # st.subheader("Tenure vs. Monthly Charges")
-        # fig, ax = plt.subplots()
-        # sns.scatterplot(data=df, x='tenure', y='MonthlyCharges', hue='Churn', ax=ax)
-        # ax.set_title("Tenure vs. Monthly Charges")
-        # st.pyplot(fig)
-
-        # Additional Metrics and Insights
-
         # 1. Churn by Contract Type with Percentage
         st.subheader("Churn by Contract Type")
         if 'Contract' in original_data.columns and 'Churn' in original_data.columns:
@@ -282,44 +266,49 @@ if uploaded_file is not None:
             ax.set_title("Tenure Distribution by Contract Type")
             st.pyplot(fig)
 
-            # 5. Tenure Distribution by Contract Type
-            st.subheader("Tenure Distribution by Contract Type")
-            if 'Contract' in original_data.columns:
-                fig, ax = plt.subplots()
-                sns.boxplot(data=original_data, x='Contract', y='tenure', ax=ax)
-                ax.set_title("Tenure Distribution by Contract Type")
-                st.pyplot(fig)
+        # 5. Churn Rate by Senior Citizen
+        st.subheader("Churn Rate by Senior Citizen")
+        if 'SeniorCitizen' in original_data.columns:
+            fig, ax = plt.subplots()
+            sns.countplot(data=original_data, x='SeniorCitizen', hue='Churn', ax=ax)
+            ax.set_title("Churn Rate by Senior Citizen")
+            st.pyplot(fig)
 
-            # 6. Churn Rate by Senior Citizen
-            st.subheader("Churn Rate by Senior Citizen")
-            if 'SeniorCitizen' in original_data.columns:
-                fig, ax = plt.subplots()
-                sns.countplot(data=original_data, x='SeniorCitizen', hue='Churn', ax=ax)
-                ax.set_title("Churn Rate by Senior Citizen")
-                st.pyplot(fig)
+        # 6. Average Monthly Charges by Payment Method
+        st.subheader("Average Monthly Charges by Payment Method")
+        if 'PaymentMethod' in original_data.columns:
+            avg_monthly_charges = original_data.groupby('PaymentMethod')['MonthlyCharges'].mean().reset_index()
+            st.write(avg_monthly_charges)
 
-            # 7. Average Monthly Charges by Payment Method
-            st.subheader("Average Monthly Charges by Payment Method")
-            if 'PaymentMethod' in original_data.columns:
-                avg_monthly_charges = original_data.groupby('PaymentMethod')['MonthlyCharges'].mean().reset_index()
-                st.write(avg_monthly_charges)
+        # 7. Correlation between Tenure and Churn
+        st.subheader("Correlation between Tenure and Churn")
+        tenure_churn_corr = df['tenure'].corr(df['Churn'])
+        st.write(f"Correlation between Tenure and Churn: {tenure_churn_corr:.2f}")
 
-            # 8. Correlation between Tenure and Churn
-            st.subheader("Correlation between Tenure and Churn")
-            tenure_churn_corr = df['tenure'].corr(df['Churn'])
-            st.write(f"Correlation between Tenure and Churn: {tenure_churn_corr:.2f}")
         # Adding CLV column to both df and original_data
-            df['CLV'] = df['MonthlyCharges'] * df['tenure']  # Assuming CLV is simply monthly charges multiplied by tenure
-            original_data['CLV'] = df['CLV']  # Add CLV to original_data as well
-            # 9. Average CLV by Contract Type
-            st.subheader("Average CLV by Contract Type")
-            if 'Contract' in original_data.columns:
-                avg_clv_by_contract = original_data.groupby('Contract')['CLV'].mean().reset_index()
-                st.write(avg_clv_by_contract)
+        df['CLV'] = df['MonthlyCharges'] * df['tenure']  # Assuming CLV is simply monthly charges multiplied by tenure
+        original_data['CLV'] = df['CLV']  # Add CLV to original_data as well
+        
+        # 8. Average CLV by Contract Type
+        st.subheader("Average CLV by Contract Type")
+        if 'Contract' in original_data.columns:
+            avg_clv_by_contract = original_data.groupby('Contract')['CLV'].mean().reset_index()
+            st.write(avg_clv_by_contract)
 
+        # 9. Average CLV by Internet Service Type
+        st.subheader("Average CLV by Internet Service Type")
+        if 'InternetService' in original_data.columns:
+            avg_clv_by_service = original_data.groupby('InternetService')['CLV'].mean().reset_index()
+            st.write(avg_clv_by_service)
 
-            # Average CLV by Internet Service Type
-            st.subheader("Average CLV by Internet Service Type")
-            if 'InternetService' in original_data.columns:
-                avg_clv_by_service = original_data.groupby('InternetService')['CLV'].mean().reset_index()
-                st.write(avg_clv_by_service)
+        # Export dataset with insights for Looker Studio
+        st.subheader("Export Dataset with Insights")
+        
+        # Provide an option to download the data as CSV
+        csv = df.to_csv(index=False).encode('utf-8')
+        st.download_button(
+            label="Download Dataset for Looker Studio",
+            data=csv,
+            file_name='churn_insights_with_clv.csv',
+            mime='text/csv'
+        )
