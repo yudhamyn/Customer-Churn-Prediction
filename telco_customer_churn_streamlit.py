@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -253,7 +252,7 @@ if uploaded_file is not None:
             st.metric(label="Average Customer Lifetime Value (CLV)", value=f"${avg_clv:.2f}")
 
             # Show the newly added column in Google Looker Studio
-            st.write("data buat di looker nih.")
+            st.write("Data for Google Looker integration.")
 
             # Option to download the updated data with the new column
             csv = df.to_csv(index=False).encode('utf-8')
@@ -323,16 +322,16 @@ if uploaded_file is not None:
             st.subheader("Correlation between Tenure and Churn")
             tenure_churn_corr = df['tenure'].corr(df['Churn'])
             st.write(f"Correlation between Tenure and Churn: {tenure_churn_corr:.2f}")
+        # Adding CLV column to both df and original_data
+            df['CLV'] = df['MonthlyCharges'] * df['tenure']  # Assuming CLV is simply monthly charges multiplied by tenure
+            original_data['CLV'] = df['CLV']  # Add CLV to original_data as well
+            # 9. Average CLV by Contract Type
+            st.subheader("Average CLV by Contract Type")
+            if 'Contract' in original_data.columns:
+                avg_clv_by_contract = original_data.groupby('Contract')['CLV'].mean().reset_index()
+                st.write(avg_clv_by_contract)
 
-            # 9. Total Charges Distribution for Churned vs. Non-Churned Customers
-            st.subheader("Total Charges Distribution for Churned vs. Non-Churned Customers")
-            if 'TotalCharges' in df.columns:
-                fig, ax = plt.subplots()
-                sns.histplot(data=original_data, x='TotalCharges', hue='Churn', kde=True, ax=ax)
-                ax.set_title("Total Charges Distribution for Churned vs. Non-Churned Customers")
-                st.pyplot(fig)
-
-            # 10. Average CLV by Internet Service Type
+            # Average CLV by Internet Service Type
             st.subheader("Average CLV by Internet Service Type")
             if 'InternetService' in original_data.columns:
                 avg_clv_by_service = original_data.groupby('InternetService')['CLV'].mean().reset_index()
