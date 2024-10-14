@@ -219,19 +219,19 @@ if uploaded_file is not None:
         ax.set_title("Distribution of Monthly Charges")
         st.pyplot(fig)
 
-        # Correlation Heatmap
-        st.subheader("Correlation Heatmap")
-        fig, ax = plt.subplots()
-        sns.heatmap(df.corr(), annot=True, cmap="coolwarm", ax=ax)
-        ax.set_title("Correlation between Features")
-        st.pyplot(fig)
+        # # Correlation Heatmap
+        # st.subheader("Correlation Heatmap")
+        # fig, ax = plt.subplots()
+        # sns.heatmap(df.corr(), annot=True, cmap="coolwarm", ax=ax)
+        # ax.set_title("Correlation between Features")
+        # st.pyplot(fig)
 
-        # Tenure vs. Monthly Charges
-        st.subheader("Tenure vs. Monthly Charges")
-        fig, ax = plt.subplots()
-        sns.scatterplot(data=df, x='tenure', y='MonthlyCharges', hue='Churn', ax=ax)
-        ax.set_title("Tenure vs. Monthly Charges")
-        st.pyplot(fig)
+        # # Tenure vs. Monthly Charges
+        # st.subheader("Tenure vs. Monthly Charges")
+        # fig, ax = plt.subplots()
+        # sns.scatterplot(data=df, x='tenure', y='MonthlyCharges', hue='Churn', ax=ax)
+        # ax.set_title("Tenure vs. Monthly Charges")
+        # st.pyplot(fig)
 
         # Additional Metrics and Insights
 
